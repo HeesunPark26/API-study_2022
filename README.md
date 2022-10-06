@@ -38,4 +38,6 @@ deactivate
 
 ## 1주차 - 환경 설정
 
-로컬에 빈 웹 서비스 띄우기 - 본인은 Python + Flask 조합을 사용
+* 미션: 로컬에 빈 웹 서비스 띄우기 - 본인은 Python + Flask 조합을 사용
+
+* 결과: [hello.py](https://github.com/HeesunPark26/API-study_2022/blob/main/hello.py) 확인
