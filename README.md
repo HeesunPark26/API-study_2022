@@ -41,3 +41,4 @@ deactivate
 * 미션: 로컬에 빈 웹 서비스 띄우기 - 본인은 Python + Flask 조합을 사용
 
 * 결과: [hello.py](https://github.com/HeesunPark26/API-study_2022/blob/main/hello.py) 확인
+  * 환경 설정 후 터미널에 `python hello.py` 치면 로컬 주소(e.g., http://127.0.0.1:5000) 확인 가능 -> 해당 주소로 접
