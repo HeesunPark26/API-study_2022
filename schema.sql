@@ -1,0 +1,24 @@
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS post;
+
+CREATE TABLE user (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE NOT NULL,
+  bio TEXT NOT NULL,
+  following TEXT NOT NULL,
+  password TEXT NOT NULL
+);
+
+CREATE TABLE post (
+    slug TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    body TEXT NOT NULL,
+    tagList TEXT NOT NULL,
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    favorited TEXT NOT NULL,
+    favoritesCount INTEGER NOT NULL,
+    author_id INTEGER NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES user (id)
+);
