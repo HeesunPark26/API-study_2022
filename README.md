@@ -42,3 +42,8 @@ deactivate
 
 * 결과: [hello.py](https://github.com/HeesunPark26/API-study_2022/blob/main/hello.py) 확인
   * 환경 설정 후 터미널에 `python hello.py` 치면 로컬 주소(e.g., http://127.0.0.1:5000) 확인 가능 -> 해당 주소로 접속
+
+
+## 2주차 - 아티클 생성
+* 미션: {{로컬호스트url}}/articles 요청으로 아티클을 생성한다.
+  * 예시) POST /localhost:8080/articles
