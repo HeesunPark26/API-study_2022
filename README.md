@@ -47,3 +47,9 @@ deactivate
 ## 2주차 - 아티클 생성
 * 미션: {{로컬호스트url}}/articles 요청으로 아티클을 생성한다.
   * 예시) POST /localhost:8080/articles
+  
+* used sqlite3
+* 참고
+  * https://www.youtube.com/watch?v=EgnyWxKFwjs&list=PLillGF-RfqbbbPz6GSEM9hLQObuQjNoj_&index=4
+  * https://www.digitalocean.com/community/tutorials/how-to-use-an-sqlite-database-in-a-flask-application
+  * https://flask.palletsprojects.com/en/2.2.x/tutorial/database/
