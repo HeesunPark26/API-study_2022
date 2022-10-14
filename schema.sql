@@ -14,7 +14,7 @@ CREATE TABLE post (
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     body TEXT NOT NULL,
-    tagList TEXT NOT NULL,
+    tagList TEXT,
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     favorited TEXT NOT NULL,
