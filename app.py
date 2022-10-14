@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import sqlite3
 
 
@@ -8,17 +8,31 @@ app = Flask(__name__)
 @app.route('/article_', methods=['GET','POST'])
 def add_article_():
     if request.method == 'POST':
-        title = request.form.get('title')
-        description = request.form.get('description')
-        body = request.form.get('body')
+        ### get request body
+        ## way 1. x-www-form-urlencoded
+        # title = request.form.get('title')
+        # description = request.form.get('description')
+        # body = request.form.get('body')
 
-        if request.form.get('tagList') is not None:
-            tagList = request.form.get('tagList')
+        # if request.form.get('tagList') is not None:
+        #     tagList = request.form.get('tagList')
+        # else:
+        #     tagList = " " # tmp
+
+        ## way 2. raw (JSON)
+        params = request.get_json()
+        title = params["title"]
+        description = params["description"]
+        body = params["body"]
+
+        if params["tagList"] is not None:
+            tagList = params["tagList"]
         else:
             tagList = " "
 
+        # make slug with title
         from slugify import slugify
-        slug = slugify(title)
+        slug = slugify(params["title"])
         
         # tmp
         author_id = 1
@@ -39,21 +53,42 @@ def add_article_():
         # give response
         cur.execute(f"SELECT * FROM post WHERE title is '{title}'")
 
-        # get output with json format
-        article= [dict((cur.description[i][0], value) \
-               for i, value in enumerate(row)) for row in cur.fetchall()]
+        ### convert output to json format
+        ## way 1. use dictionary
+        # article= [dict((cur.description[i][0], value) \
+        #        for i, value in enumerate(row)) for row in cur.fetchall()]
+        # result = dict()
+        # if len(article) == 0:
+        #     return "ERROR: Article posting failure"
+        # elif len(article) == 1:
+        #     result["article"] = article[0]
+        # else:
+        #     result["articles"] = article
 
+
+        # way 2. use jsonify
+        article = cur.fetchall()
+        if len(article) == 0:
+            return "ERROR: Article posting failure"
+
+        elif len(article) == 1:
+            result = jsonify(
+                slug = article[0][0],
+                title = article[0][1],
+                description = article[0][2],
+                body = article[0][3],
+                tagList = article[0][4],
+                createdAt = article[0][5],
+                updatedAt = article[0][6],
+                favorited = article[0][7],
+                favoritesCount = article[0][8],
+                author_id = article[0][9]
+            )
+        
         # Close connection
         connection.close()
         
-        result = dict()
-        if len(article) == 0:
-            return "ERROR: Article posting failure"
-        elif len(article) == 1:
-            result["article"] = article[0]
-        else:
-            result["articles"] = article
-
+     
         return result
         
 if __name__ == '__main__':
