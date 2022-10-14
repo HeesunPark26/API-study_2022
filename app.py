@@ -8,10 +8,10 @@ app = Flask(__name__)
 @app.route('/article_', methods=['GET','POST'])
 def add_article_():
     if request.method == 'POST':
-        # https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
         title = request.form.get('title')
         description = request.form.get('description')
         body = request.form.get('body')
+
         if request.form.get('tagList') is not None:
             tagList = request.form.get('tagList')
         else:
@@ -19,11 +19,11 @@ def add_article_():
 
         from slugify import slugify
         slug = slugify(title)
-        #tmp
+        
+        # tmp
         author_id = 1
 
-
-        # Create Curser
+        # Create Cursor
         connection = sqlite3.connect('database.db')
         cur = connection.cursor()
 
@@ -55,6 +55,7 @@ def add_article_():
             result["articles"] = article
 
         return result
+        
 if __name__ == '__main__':
     app.run(debug=True) # debug=True: I don't have to restart server.
 
