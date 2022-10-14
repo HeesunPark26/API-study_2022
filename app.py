@@ -66,24 +66,35 @@ def add_article_():
         #     result["articles"] = article
 
 
-        # way 2. use jsonify
-        article = cur.fetchall()
+        ## way 2. use jsonify
+        # article = cur.fetchall()
+        # if len(article) == 0:
+        #     return "ERROR: Article posting failure"
+
+        # elif len(article) == 1:
+        #     result = jsonify(
+        #         slug = article[0][0],
+        #         title = article[0][1],
+        #         description = article[0][2],
+        #         body = article[0][3],
+        #         tagList = article[0][4],
+        #         createdAt = article[0][5],
+        #         updatedAt = article[0][6],
+        #         favorited = article[0][7],
+        #         favoritesCount = article[0][8],
+        #         author_id = article[0][9]
+        #     )
+
+        ## way 3. mixed?
+        article = [dict((cur.description[i][0], value) \
+                    for i, value in enumerate(row)) for row in cur.fetchall()]
         if len(article) == 0:
             return "ERROR: Article posting failure"
-
         elif len(article) == 1:
-            result = jsonify(
-                slug = article[0][0],
-                title = article[0][1],
-                description = article[0][2],
-                body = article[0][3],
-                tagList = article[0][4],
-                createdAt = article[0][5],
-                updatedAt = article[0][6],
-                favorited = article[0][7],
-                favoritesCount = article[0][8],
-                author_id = article[0][9]
-            )
+
+            result = jsonify(article = article)
+        else:
+            result = jsonify(articles = article)
         
         # Close connection
         connection.close()
