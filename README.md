@@ -49,10 +49,10 @@ deactivate
   * 예시) POST /localhost:8080/articles
   
 * 결과: [app.py](https://github.com/HeesunPark26/API-study_2022/blob/main/app.py) & [init_db.py](https://github.com/HeesunPark26/API-study_2022/blob/main/init_db.py)
-  0. [한번만] `init_db.py` 실행하여 database 생성 및 initialization
-  1. Postman에서 `POST http://127.0.0.1:5000/article_`로 요청
-  2. request body로 받은 데이터 `database.db`에 저장 (sqlite3 사용)
-  3. DB에서 다시 데이터 불러와 reponse body 보냄
+  1. [한번만] `init_db.py` 실행하여 database 생성 및 initialization
+  2. Postman에서 `POST http://127.0.0.1:5000/article_`로 요청
+  3. request body로 받은 데이터 `database.db`에 저장 (sqlite3 사용)
+  4. DB에서 다시 데이터 불러와 reponse body 보냄
 
 * 불충분한 부분
   1. 이렇게 DB에 직접 저장하고 response body를 위해 다시 data를 retrieve하는 것이 맞는지?
