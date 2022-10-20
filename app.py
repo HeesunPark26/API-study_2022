@@ -5,8 +5,8 @@ import sqlite3
 app = Flask(__name__)
 
 # Create Article
-@app.route('/article_', methods=['GET','POST'])
-def add_article_():
+@app.route('/articles', methods=['GET', 'POST'])
+def add_article():
     if request.method == 'POST':
         ### get request body
         ## way 1. x-www-form-urlencoded
@@ -20,7 +20,7 @@ def add_article_():
         #     tagList = " " # tmp
 
         ## way 2. raw (JSON)
-        params = request.get_json()
+        params = request.get_json()["article"]
         title = params["title"]
         description = params["description"]
         body = params["body"]
@@ -32,7 +32,7 @@ def add_article_():
 
         # make slug with title
         from slugify import slugify
-        slug = slugify(params["title"])
+        slug = slugify(title)
         
         # tmp
         author_id = 1
@@ -101,7 +101,85 @@ def add_article_():
         
      
         return result
+
+@app.route('/articles/<string:slug>', methods = ['GET', 'PUT', 'DELETE'])
+def get_article(slug):
+    if request.method == 'GET':
+        # Create Cursor
+        connection = sqlite3.connect('database.db')
+        cur = connection.cursor()
+
+        # execute 
+        cur.execute(f"SELECT * FROM post WHERE slug is '{slug}'")
+
+        # get article
+        article = [dict((cur.description[i][0], value) \
+                        for i, value in enumerate(row)) for row in cur.fetchall()]
+
+        result = jsonify(article = article)
+
+        # close connection
+        connection.close()
+
+        return result
+    elif request.method == 'PUT':
+        params = request.get_json()["article"]
+        query_set_l = [f"{p} = '{params[p]}'" for p in params.keys()]
+
+        if params["title"] is not None:
+            from slugify import slugify
+            new_slug = slugify(params["title"])
+            query_set_l.append(f"slug = '{new_slug}'")
         
+        query_set = ", ".join(query_set_l)
+
+        # Create Cursor
+        connection = sqlite3.connect('database.db')
+        cur = connection.cursor()
+
+        # execute 
+        cur.execute((
+            "UPDATE post "
+            f"SET {query_set} "
+            f"WHERE slug is '{slug}'"))
+        
+        # Commit to DB
+        connection.commit()
+
+        # give response
+        cur.execute(f"SELECT * FROM post WHERE slug is '{new_slug}'")
+
+        # get article
+        article = [dict((cur.description[i][0], value) \
+                        for i, value in enumerate(row)) for row in cur.fetchall()]
+
+        result = jsonify(article = article)
+
+        # close connection
+        connection.close()
+
+        return result
+
+    elif request.method == 'DELETE':
+        # Create Cursor
+        connection = sqlite3.connect('database.db')
+        cur = connection.cursor()
+
+        # execute 
+        cur.execute(f"DELETE FROM post WHERE slug = '{slug}'")
+
+        # Commit to DB
+        connection.commit()
+
+        # close connection
+        connection.close()
+
+        return "ARTICLE DELETED"
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True) # debug=True: I don't have to restart server.
 
