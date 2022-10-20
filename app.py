@@ -103,7 +103,7 @@ def add_article():
         return result
 
 @app.route('/articles/<string:slug>', methods = ['GET', 'PUT', 'DELETE'])
-def get_article(slug):
+def article(slug):
     if request.method == 'GET':
         # Create Cursor
         connection = sqlite3.connect('database.db')
