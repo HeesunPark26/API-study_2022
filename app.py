@@ -124,8 +124,12 @@ def article(slug):
         return result
     elif request.method == 'PUT':
         params = request.get_json()["article"]
-        query_set_l = [f"{p} = '{params[p]}'" for p in params.keys()]
 
+        # to make query including to-be-updated parameters
+        query_set_l = [f"{p} = '{params[p]}'" for p in params.keys()]
+        # e.g., query_set_l is ["title = 'how to train dog'"]
+
+        # change slug if title is changed
         if params["title"] is not None:
             from slugify import slugify
             new_slug = slugify(params["title"])
