@@ -1,6 +1,7 @@
 # API-study_2022
 
 Wellysis 사내 스터디 (기초 백엔드 API) 기록 repo입니다.
+참고: https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints
 
 ## Setting
 
@@ -55,8 +56,9 @@ deactivate
   4. DB에서 다시 데이터 불러와 reponse body 보냄
 
 * 불충분한 부분
-  1. 이렇게 DB에 직접 저장하고 response body를 위해 다시 data를 retrieve하는 것이 맞는지?
+  1. 이렇게 DB에 직접 저장하고 response body를 위해 다시 data를 retrieve하는 것이 맞는지? O
   2. tag를 List로 저장하기(현재는 "tag1, tag2"로 저장, ["tag1", "tag2"]로 저장하고 싶음
+    - sql에는 일단 string으로 저장, list로 받은 인풋을 자체적으로 string으로 바꾸고 return할때는 다시 파싱해서 list로 내보내는 방식으로 할 것.
   3. author 정보 잘 가져와서 JSON에 넣기 (SQL에서부터 깔끔하게 가져오기 vs 다 불러와서 Python에서 잘 조합)
 
 
@@ -65,3 +67,9 @@ deactivate
   * https://www.digitalocean.com/community/tutorials/how-to-use-an-sqlite-database-in-a-flask-application
   * https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
   * https://flask.palletsprojects.com/en/2.2.x/tutorial/database/
+  
+## 3주차 - 아티클 get, update, and delete
+* 미션: {{로컬호스트url}}/articles/{{slug}}로 들어온 요청을 요청 종류에 따라 처리함 (get, put (update), delete))
+  * update할 때는 title이 바뀌면 slug도 바뀌도록
+
+* 결과: [app.py](https://github.com/HeesunPark26/API-study_2022/blob/main/app.py)
