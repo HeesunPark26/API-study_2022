@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS post;
+DROP TABLE IF EXISTS comment;
+
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,5 +22,24 @@ CREATE TABLE post (
     favorited TEXT NOT NULL,
     favoritesCount INTEGER NOT NULL,
     author_id INTEGER NOT NULL,
+    PRIMARY KEY (slug),
     FOREIGN KEY (author_id) REFERENCES user (id)
+
+);
+
+CREATE TRIGGER update_Timestamp
+    AFTER UPDATE 
+    ON post
+BEGIN
+   UPDATE post SET updatedAt = CURRENT_TIMESTAMP WHERE slug=OLD.slug;
+END;
+
+CREATE TABLE comment (
+    article_id TEXT NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    body TEXT NOT NULL,
+    author_id INTEGER NOT NULL,
+    FOREIGN KEY (article_id) REFERENCES post (slug)
 );
