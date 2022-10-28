@@ -205,47 +205,33 @@ def comments(slug):
 
         author_id = 1
 
-        # Create Cursor
         connection = sqlite3.connect('database.db')
         cur = connection.cursor()
-
-        # Execute
         cur.execute((
             "INSERT INTO comment "
             "(article_id, body, author_id) "
             f"VALUES ('{slug}', '{body}', {author_id})"))
 
         comment_id = cur.lastrowid
-        
-        # Commit to DB
         connection.commit()
 
-        # give response
         cur.execute(f"SELECT * FROM comment WHERE id is '{comment_id}'")
-        
-
         comment = [dict((cur.description[i][0], value) \
             for i, value in enumerate(row)) for row in cur.fetchall()]
-        
-        # close connection
         connection.close()
 
         return jsonify(comment = comment)
 
     elif request.method == 'GET':
-        # Create Cursor
         connection = sqlite3.connect('database.db')
         cur = connection.cursor()
-
-        # execute 
         cur.execute(f"SELECT * FROM comment WHERE article_id is '{slug}'")
 
         # get article
         comment = [dict((cur.description[i][0], value) \
                         for i, value in enumerate(row)) for row in cur.fetchall()]
-        
-        # close connection
         connection.close()
+
         if len(comment) == 0:
             return "NO COMMENT"
         elif len(comment) == 1:
@@ -261,11 +247,7 @@ def delete_comment(slug, id):
 
     # execute 
     cur.execute(f"DELETE FROM comment WHERE article_id = '{slug}' AND id = {id}")
-
-    # Commit to DB
     connection.commit()
-
-    # close connection
     connection.close()
 
     return "COMMENT DELETED"
