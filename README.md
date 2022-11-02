@@ -69,7 +69,15 @@ deactivate
   * https://flask.palletsprojects.com/en/2.2.x/tutorial/database/
   
 ## 3주차 - 아티클 get, update, and delete
-* 미션: {{로컬호스트url}}/articles/{{slug}}로 들어온 요청을 요청 종류에 따라 처리함 (get, put (update), delete))
+* 미션: {{로컬호스트url}}/articles/{{slug}}로 들어온 요청을 요청 종류에 따라 처리함 (get, put (update), delete)
   * update할 때는 title이 바뀌면 slug도 바뀌도록
 
 * 결과: [app.py](https://github.com/HeesunPark26/API-study_2022/blob/main/app.py)
+
+
+## 4주차 - comment create, get, and delete
+* 미션: {{로컬호스트url}}/articles/{{slug}}/comments로 들어온 요청을 요청 종류에 따라 처리함 POST, GET, DELETE (delete의 경우에는 /comments/{{id}} 까지)
+
+* 결과: [app.py](https://github.com/HeesunPark26/API-study_2022/blob/main/app.py)
+
+## 5주차 - 
