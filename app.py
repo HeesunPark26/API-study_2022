@@ -252,6 +252,78 @@ def delete_comment(slug, id):
 
     return "COMMENT DELETED"
 
+@app.route('/articles/<string:slug>/favorite', methods = ['POST', 'DELETE'])
+def favorite(slug):
+    if request.method == 'POST':
+        connection = sqlite3.connect('database.db')
+        cur = connection.cursor()
+
+        # execute 
+        cur.execute((
+            "UPDATE post "
+            f"SET favoritesCount = favoritesCount + 1, "
+            "favorited = CASE WHEN favorited = 'False' THEN 'True' ELSE 'True' END "
+            f"WHERE slug is '{slug}'"))
+        connection.commit()
+        cur.execute(f"SELECT * FROM post WHERE slug is '{slug}'")
+        article = [dict((cur.description[i][0], value) \
+                        for i, value in enumerate(row)) for row in cur.fetchall()]
+        connection.close()
+
+        
+        article = article[0]
+        if article["tagList"] is not None:
+            article["tagList"] = article["tagList"].split(",")
+
+        return jsonify(article = article)
+
+    if request.method == 'DELETE':
+        connection = sqlite3.connect('database.db')
+        cur = connection.cursor()
+
+        # execute 
+        cur.execute((
+            "UPDATE post "
+            f"SET favoritesCount = CASE WHEN favoritesCount = 0 THEN 0 ELSE favoritesCount -1 END "
+            f"WHERE slug is '{slug}'"))
+        connection.commit()
+
+        cur.execute((
+            "UPDATE post "
+            "SET favorited = CASE WHEN favoritesCount = 0 THEN 'False' ELSE 'True' END "
+            f"WHERE slug is '{slug}'"))
+        connection.commit()
+
+        cur.execute(f"SELECT * FROM post WHERE slug is '{slug}'")
+        article = [dict((cur.description[i][0], value) \
+                        for i, value in enumerate(row)) for row in cur.fetchall()]
+        connection.close()
+
+        
+        article = article[0]
+        if article["tagList"] is not None:
+            article["tagList"] = article["tagList"].split(",")
+
+        return jsonify(article = article)
+
+@app.route('/tags', methods = ['GET'])
+def tags():
+    connection = sqlite3.connect('database.db')
+    cur = connection.cursor()
+
+    # execute 
+    cur.execute(
+        "SELECT tagList FROM post") 
+    connection.commit()
+
+    tags = cur.fetchall()
+    tags_all = []
+    for t in tags:
+        tags_all += t[0].split(',')
+    tags_all = list(set(tags_all))
+
+    return jsonify(tags = tags_all)
+
 if __name__ == '__main__':
     app.run(debug=True) # debug=True: I don't have to restart server.
 
