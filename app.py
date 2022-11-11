@@ -8,18 +8,7 @@ app = Flask(__name__)
 @app.route('/articles', methods=['GET', 'POST'])
 def add_article():
     if request.method == 'POST':
-        ### get request body
-        ## way 1. x-www-form-urlencoded
-        # title = request.form.get('title')
-        # description = request.form.get('description')
-        # body = request.form.get('body')
 
-        # if request.form.get('tagList') is not None:
-        #     tagList = request.form.get('tagList')
-        # else:
-        #     tagList = " " # tmp
-
-        ## way 2. raw (JSON)
         params = request.get_json()["article"]
         title = params["title"]
         description = params["description"]
@@ -62,40 +51,6 @@ def add_article():
         # give response
         cur.execute(f"SELECT * FROM post WHERE slug is '{slug}'")
 
-
-        ### convert output to json format
-        ## way 1. use dictionary
-        # article= [dict((cur.description[i][0], value) \
-        #        for i, value in enumerate(row)) for row in cur.fetchall()]
-        # result = dict()
-        # if len(article) == 0:
-        #     return "ERROR: Article posting failure"
-        # elif len(article) == 1:
-        #     result["article"] = article[0]
-        # else:
-        #     result["articles"] = article
-
-
-        ## way 2. use jsonify
-        # article = cur.fetchall()
-        # if len(article) == 0:
-        #     return "ERROR: Article posting failure"
-
-        # elif len(article) == 1:
-        #     result = jsonify(
-        #         slug = article[0][0],
-        #         title = article[0][1],
-        #         description = article[0][2],
-        #         body = article[0][3],
-        #         tagList = article[0][4],
-        #         createdAt = article[0][5],
-        #         updatedAt = article[0][6],
-        #         favorited = article[0][7],
-        #         favoritesCount = article[0][8],
-        #         author_id = article[0][9]
-        #     )
-
-        ## way 3. mixed?
         article = [dict((cur.description[i][0], value) \
                     for i, value in enumerate(row)) for row in cur.fetchall()]
         
@@ -110,31 +65,103 @@ def add_article():
             if article["tagList"] is not None:
                 article["tagList"] = article["tagList"].split(",")
             return jsonify(article = article)
+    elif request.method == 'GET':
+        param_dict = request.args.to_dict()
+        # no parameter -> default
+        if len(param_dict) == 0:
+            connection = sqlite3.connect('database.db')
+            cur = connection.cursor()
+
+            cur.execute(("SELECT * FROM post ORDER BY createdAT DESC LIMIT 20"))
+            articles = [dict((cur.description[i][0], value) \
+                    for i, value in enumerate(row)) for row in cur.fetchall()]
+            connection.close()
+            return jsonify(articles = articles)
+        else:            
+            connection = sqlite3.connect('database.db')
+            cur = connection.cursor()
+
+            query_tag = None
+            query_author = None
+            query_limit = ''
+
+            if param_dict["tag"] is not None:
+                tag = param_dict["tag"]
+                query_tag = f"tagList LIKE '%{tag}%'"
+            if param_dict["author"] is not None:
+                author = param_dict["author"]
+                query_author = (
+                    f"author_id IN (SELECT id from user WHERE username is '{author}')")
+            if param_dict["limit"] is not None:
+                limit = param_dict["limit"]
+                query_limit = f"LIMIT {limit}"
+
+            if query_author is not None:
+                if query_tag is not None:
+                    query_where = f"WHERE ({query_tag}) AND ({query_author})"
+                else:
+                    query_where = f"WHERE ({query_author})"
+            else:
+                if query_tag is not None:
+                    query_where = f"WHERE ({query_tag})"
+                else:
+                    query_where = ''
+            
+            cur.execute(f"SELECT * FROM post {query_where} ORDER BY createdAT DESC {query_limit};")
+            articles = [dict((cur.description[i][0], value) \
+                    for i, value in enumerate(row)) for row in cur.fetchall()]
+            connection.close()
+
+            return jsonify(articles = articles)
+@app.route('/articles/feed', methods = ['GET'])
+def feed_article():
+    param_dict = request.args.to_dict()
+    if len(param_dict) == 0:
+        connection = sqlite3.connect('database.db')
+        cur = connection.cursor()
+
+        cur.execute(("SELECT * FROM post ORDER BY createdAT DESC LIMIT 20"))
+        articles = [dict((cur.description[i][0], value) \
+            for i, value in enumerate(row)) for row in cur.fetchall()]
+        connection.close()
+        return articles
+    else:
+        limit = param_dict["limit"]
+        connection = sqlite3.connect('database.db')
+        cur = connection.cursor()
+
+        cur.execute((f"SELECT * FROM post ORDER BY createdAT DESC LIMIT {limit}"))
+        articles = [dict((cur.description[i][0], value) \
+            for i, value in enumerate(row)) for row in cur.fetchall()]
+        connection.close()
+        return jsonify(articles = articles)
+
 
 @app.route('/articles/<string:slug>', methods = ['GET', 'PUT', 'DELETE'])
 def article(slug):
     if request.method == 'GET':
-        # Create Cursor
-        connection = sqlite3.connect('database.db')
-        cur = connection.cursor()
+        if slug != 'feed':
+            # Create Cursor
+            connection = sqlite3.connect('database.db')
+            cur = connection.cursor()
 
-        # execute 
-        cur.execute(f"SELECT * FROM post WHERE slug is '{slug}'")
+            # execute 
+            cur.execute(f"SELECT * FROM post WHERE slug is '{slug}'")
 
-        # get article
-        article = [dict((cur.description[i][0], value) \
-                        for i, value in enumerate(row)) for row in cur.fetchall()]
-        
-        # close connection
-        connection.close()
+            # get article
+            article = [dict((cur.description[i][0], value) \
+                            for i, value in enumerate(row)) for row in cur.fetchall()]
+            
+            # close connection
+            connection.close()
 
-        if len(article) == 0:
-            return "No article"
-        elif len(article) == 1:
-            article = article[0]
-            if article["tagList"] is not None:
-                article["tagList"] = article["tagList"].split(",")
-            return jsonify(article = article)
+            if len(article) == 0:
+                return "No article"
+            elif len(article) == 1:
+                article = article[0]
+                if article["tagList"] is not None:
+                    article["tagList"] = article["tagList"].split(",")
+                return jsonify(article = article)
 
     elif request.method == 'PUT':
         params = request.get_json()["article"]
