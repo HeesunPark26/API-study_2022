@@ -80,4 +80,14 @@ deactivate
 
 * 결과: [app.py](https://github.com/HeesunPark26/API-study_2022/blob/main/app.py)
 
-## 5주차 - 
+## 5주차 - favorite article, unfavorite article, get tags
+* 미션: {{로컬호스트url}}/articles/{{slug}}/favorite 로 들어온 요청을 종류에 따라 처리함(POST, DELETE) + GET {{로컬호스트url}}/tags 를 통해 tags 불러오기.
+
+* 결과: [app.py](https://github.com/HeesunPark26/API-study_2022/blob/main/app.py)
+
+## 6주차 - list articles, feed articles
+* 미션: list article의 경우 GET {{로컬호스트url}}/articles를 콜했을 때 filter에 따라서 아티클 보여주기. feed article의 경우 GET {{로컬호스트url}}/articles/feed를 콜했을 때 article 보여주기
+
+* 결과: [app.py](https://github.com/HeesunPark26/API-study_2022/blob/main/app.py)
+
+ * 참고: 수정하고 tag 처리하는 과정에서 에러 발생함. 수정 요망..
