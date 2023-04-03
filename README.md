@@ -1,7 +1,9 @@
 # API-study_2022
 
 Wellysis 사내 스터디 (기초 백엔드 API) 기록 repo입니다.
+
 기간: 2022.09 - 2022.11
+
 참고: https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints
 
 ## Setting
