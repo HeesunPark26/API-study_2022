@@ -2,6 +2,8 @@
 
 Wellysis 사내 스터디 (기초 백엔드 API) 기록 repo입니다.
 
+API가 무엇인지...에 대한 이해부터 시작하기 위해 토큰 인증 구현, user 부분 구현 등을 생략하고 진행한 스터디입니다.
+
 기간: 2022.09 - 2022.11
 
 참고: https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints
